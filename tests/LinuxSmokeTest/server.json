@@ -11,8 +11,10 @@
         "key": "key.pem",
         "key_password": "",
         "cipher": "",
+        "cipher_tls13": "",
         "prefer_server_cipher": true,
         "alpn": [],
+        "alpn_port_override": {},
         "reuse_session": false,
         "session_ticket": false,
         "session_timeout": 600,
@@ -24,6 +26,7 @@
         "prefer_ipv4": false,
         "no_delay": true,
         "keep_alive": true,
+        "reuse_port": false,
         "fast_open": false,
         "fast_open_qlen": 20
     },
@@ -33,6 +36,7 @@
         "server_port": 0,
         "database": "",
         "username": "",
-        "password": ""
+        "password": "",
+        "cafile": ""
     }
 }

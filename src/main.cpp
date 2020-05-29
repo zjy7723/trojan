@@ -1,7 +1,7 @@
 /*
  * This file is part of the trojan project.
  * Trojan is an unidentifiable mechanism that helps you bypass GFW.
- * Copyright (C) 2017-2019  GreaterFire, wongsyrone
+ * Copyright (C) 2017-2020  The Trojan Authors.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@
 #ifdef ENABLE_MYSQL
 #include <mysql.h>
 #endif // ENABLE_MYSQL
-#include "service.h"
-#include "version.h"
+#include "core/service.h"
+#include "core/version.h"
 using namespace std;
 using namespace boost::asio;
 namespace po = boost::program_options;
@@ -88,7 +88,7 @@ int main(int argc, const char *argv[]) {
             exit(EXIT_SUCCESS);
         }
         if (vm.count("version")) {
-            Log::log(string("Boost ") + BOOST_LIB_VERSION + ", " + OPENSSL_VERSION_TEXT, Log::FATAL);
+            Log::log(string("Boost ") + BOOST_LIB_VERSION + ", " + OpenSSL_version(OPENSSL_VERSION), Log::FATAL);
 #ifdef ENABLE_MYSQL
             Log::log(string(" [Enabled] MySQL Support (") + mysql_get_client_info() + ')', Log::FATAL);
 #else // ENABLE_MYSQL
@@ -109,6 +109,26 @@ int main(int argc, const char *argv[]) {
 #else // ENABLE_SSL_KEYLOG
             Log::log("[Disabled] SSL KeyLog Support", Log::FATAL);
 #endif // ENABLE_SSL_KEYLOG
+#ifdef ENABLE_NAT
+            Log::log(" [Enabled] NAT Support", Log::FATAL);
+#else // ENABLE_NAT
+            Log::log("[Disabled] NAT Support", Log::FATAL);
+#endif // ENABLE_NAT
+#ifdef ENABLE_TLS13_CIPHERSUITES
+            Log::log(" [Enabled] TLS1.3 Ciphersuites Support", Log::FATAL);
+#else // ENABLE_TLS13_CIPHERSUITES
+            Log::log("[Disabled] TLS1.3 Ciphersuites Support", Log::FATAL);
+#endif // ENABLE_TLS13_CIPHERSUITES
+#ifdef ENABLE_REUSE_PORT
+            Log::log(" [Enabled] TCP Port Reuse Support", Log::FATAL);
+#else // ENABLE_REUSE_PORT
+            Log::log("[Disabled] TCP Port Reuse Support", Log::FATAL);
+#endif // ENABLE_REUSE_PORT
+            Log::log("OpenSSL Information", Log::FATAL);
+            if (OpenSSL_version_num() != OPENSSL_VERSION_NUMBER) {
+                Log::log(string("\tCompile-time Version: ") + OPENSSL_VERSION_TEXT, Log::FATAL);
+            }
+            Log::log(string("\tBuild Flags: ") + OpenSSL_version(OPENSSL_CFLAGS), Log::FATAL);
             exit(EXIT_SUCCESS);
         }
         if (vm.count("log")) {
